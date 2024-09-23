@@ -58,6 +58,7 @@ flutter:
   assets:
     - assets/fonts/ComicSansMS.ttf
     - assets/icon/MyVocab.png
+  uses-material-design: true
 
   fonts:
     - family: ComicSans
@@ -68,6 +69,8 @@ flutter_icons:
   android: true
   ios: true
   image_path: "assets/icon/MyVocab.png"
+
+  
 
 
   # The following line ensures that the Material Icons font is

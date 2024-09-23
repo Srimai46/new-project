@@ -8,6 +8,8 @@ void main() {
 }
 
 class MyVocabApp extends StatelessWidget {
+  const MyVocabApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,6 +26,8 @@ class MyVocabApp extends StatelessWidget {
 // ---------------- Scaffold หลักสำหรับการนำทาง ----------------
 
 class MainScaffold extends StatefulWidget {
+  const MainScaffold({super.key});
+
   @override
   _MainScaffoldState createState() => _MainScaffoldState();
 }
@@ -42,7 +46,7 @@ class _MainScaffoldState extends State<MainScaffold> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
+        title: const Row(
           children: [
             CircleAvatar(
               radius: 16,
@@ -70,7 +74,7 @@ class _MainScaffoldState extends State<MainScaffold> {
             _currentIndex = index;
           });
         },
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Settings',
@@ -96,9 +100,11 @@ class _MainScaffoldState extends State<MainScaffold> {
 // ---------------- หน้า Setting ----------------
 
 class SettingPage extends StatelessWidget {
+  const SettingPage({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       body: Center(
         child: Text(
           'Settings Page',
@@ -112,12 +118,14 @@ class SettingPage extends StatelessWidget {
 // ---------------- หน้าจัดการอัลบั้ม พร้อมระบบค้นหา ----------------
 
 class AlbumsPage extends StatefulWidget {
+  const AlbumsPage({super.key});
+
   @override
   _AlbumsPageState createState() => _AlbumsPageState();
 }
 
 class _AlbumsPageState extends State<AlbumsPage> {
-  List<String> _albums = [
+  final List<String> _albums = [
     'Travel Album',
     'Family Album',
     'Friends Album',
@@ -125,7 +133,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
     'Nature Album',
   ];
   List<String> _filteredAlbums = [];
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -149,7 +157,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Albums'),
+        title: const Text('Albums'),
         backgroundColor: Colors.lightBlue,
       ),
       body: Padding(
@@ -158,7 +166,7 @@ class _AlbumsPageState extends State<AlbumsPage> {
           children: [
             TextField(
               controller: _searchController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Search Albums',
                 prefixIcon: Icon(Icons.search),
               ),
@@ -184,6 +192,8 @@ class _AlbumsPageState extends State<AlbumsPage> {
 // ---------------- หน้าจัดการเกม ----------------
 
 class GamePage extends StatefulWidget {
+  const GamePage({super.key});
+
   @override
   _GamePageState createState() => _GamePageState();
 }
@@ -247,7 +257,7 @@ class _GamePageState extends State<GamePage> {
         _canTap = true;
         _firstTileIndex = null;
       } else {
-        Future.delayed(Duration(seconds: 1), () {
+        Future.delayed(const Duration(seconds: 1), () {
           setState(() {
             _revealed[firstIndex] = false;
             _revealed[index] = false;
@@ -273,9 +283,9 @@ class _GamePageState extends State<GamePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Word Matching Game'),
+        title: const Text('Word Matching Game'),
       ),
-      body: Center(
+      body: const Center(
         child: Text(
           'Game Page',
           style: TextStyle(fontSize: 20),
@@ -287,7 +297,7 @@ class _GamePageState extends State<GamePage> {
   Widget _buildGrid() {
     return GridView.builder(
       shrinkWrap: true,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 4, // Change to 4 columns for 4x4 grid
       ),
       itemCount: _tiles.length,
@@ -299,7 +309,7 @@ class _GamePageState extends State<GamePage> {
             child: Center(
               child: Text(
                 _revealed[index] ? _tiles[index] : '',
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 18),
               ),
             ),
           ),
@@ -312,16 +322,18 @@ class _GamePageState extends State<GamePage> {
 // ---------------- หน้าจัดการคำศัพท์ ----------------
 
 class VocabularyPage extends StatefulWidget {
+  const VocabularyPage({super.key});
+
   @override
   _VocabularyPageState createState() => _VocabularyPageState();
 }
 
 class _VocabularyPageState extends State<VocabularyPage> {
   List<Map<String, String>> _words = [];
-  TextEditingController _wordController = TextEditingController();
-  TextEditingController _translationController = TextEditingController();
+  final TextEditingController _wordController = TextEditingController();
+  final TextEditingController _translationController = TextEditingController();
 
-  List<String> _wordTypes = [
+  final List<String> _wordTypes = [
     'Nouns',
     'Verbs',
     'Adjectives',
@@ -393,25 +405,25 @@ class _VocabularyPageState extends State<VocabularyPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Edit Word'),
+          title: const Text('Edit Word'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: _wordController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Edit word',
                 ),
               ),
               TextField(
                 controller: _translationController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Edit translation',
                 ),
               ),
               DropdownButton<String>(
                 value: _selectedType,
-                hint: Text('Select type of word'),
+                hint: const Text('Select type of word'),
                 onChanged: (String? newValue) {
                   setState(() {
                     _selectedType = newValue;
@@ -428,13 +440,13 @@ class _VocabularyPageState extends State<VocabularyPage> {
           ),
           actions: [
             ElevatedButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop(); // ปิด dialog
               },
             ),
             ElevatedButton(
-              child: Text('Save'),
+              child: const Text('Save'),
               onPressed: () {
                 setState(() {
                   _words[index] = {
@@ -465,20 +477,20 @@ class _VocabularyPageState extends State<VocabularyPage> {
           children: [
             TextField(
               controller: _wordController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Enter new word',
               ),
             ),
             TextField(
               controller: _translationController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Enter translation',
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             DropdownButton<String>(
               value: _selectedType,
-              hint: Text('Select type of word'),
+              hint: const Text('Select type of word'),
               onChanged: (String? newValue) {
                 setState(() {
                   _selectedType = newValue;
@@ -491,10 +503,10 @@ class _VocabularyPageState extends State<VocabularyPage> {
                 );
               }).toList(),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: _addWord,
-              child: Text('Save Word'),
+              child: const Text('Save Word'),
             ),
             Expanded(
               child: ListView.builder(
@@ -508,7 +520,7 @@ class _VocabularyPageState extends State<VocabularyPage> {
                       subtitle:
                           Text('Translation: ${_words[index]['translation']}'),
                       trailing: IconButton(
-                        icon: Icon(Icons.delete),
+                        icon: const Icon(Icons.delete),
                         onPressed: () => _removeWord(index),
                       ),
                     ),
