@@ -2,9 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
 import 'dart:math';
+import 'login_screen.dart';
+import 'manage_words_page.dart';
 
-void main() {
-  runApp(MyVocabApp());
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Login App',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: LoginScreen(),
+    );
+  }
 }
 
 class MyVocabApp extends StatelessWidget {
@@ -15,7 +28,7 @@ class MyVocabApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        fontFamily: 'ComicSans', // กำหนดฟอนต์ที่เราเพิ่มไว้
+        fontFamily: 'ComicSans',
         primarySwatch: Colors.blue,
       ),
       home: MainScaffold(),
@@ -37,7 +50,6 @@ class _MainScaffoldState extends State<MainScaffold> {
 
   final List<Widget> _pages = [
     SettingPage(),
-    AlbumsPage(),
     GamePage(),
     VocabularyPage(),
   ];
@@ -80,10 +92,6 @@ class _MainScaffoldState extends State<MainScaffold> {
             label: 'Settings',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.photo_album),
-            label: 'Albums',
-          ),
-          BottomNavigationBarItem(
             icon: Icon(Icons.gamepad),
             label: 'Game',
           ),
@@ -109,80 +117,6 @@ class SettingPage extends StatelessWidget {
         child: Text(
           'Settings Page',
           style: TextStyle(fontSize: 20),
-        ),
-      ),
-    );
-  }
-}
-
-// ---------------- หน้าจัดการอัลบั้ม พร้อมระบบค้นหา ----------------
-
-class AlbumsPage extends StatefulWidget {
-  const AlbumsPage({super.key});
-
-  @override
-  _AlbumsPageState createState() => _AlbumsPageState();
-}
-
-class _AlbumsPageState extends State<AlbumsPage> {
-  final List<String> _albums = [
-    'Travel Album',
-    'Family Album',
-    'Friends Album',
-    'Work Album',
-    'Nature Album',
-  ];
-  List<String> _filteredAlbums = [];
-  final TextEditingController _searchController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _filteredAlbums = _albums; // เริ่มต้นแสดงทั้งหมด
-  }
-
-  void _filterAlbums(String query) {
-    setState(() {
-      if (query.isEmpty) {
-        _filteredAlbums = _albums;
-      } else {
-        _filteredAlbums = _albums
-            .where((album) => album.toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Albums'),
-        backgroundColor: Colors.lightBlue,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _searchController,
-              decoration: const InputDecoration(
-                labelText: 'Search Albums',
-                prefixIcon: Icon(Icons.search),
-              ),
-              onChanged: _filterAlbums,
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _filteredAlbums.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(_filteredAlbums[index]),
-                  );
-                },
-              ),
-            ),
-          ],
         ),
       ),
     );
@@ -321,214 +255,24 @@ class _GamePageState extends State<GamePage> {
 
 // ---------------- หน้าจัดการคำศัพท์ ----------------
 
-class VocabularyPage extends StatefulWidget {
+class VocabularyPage extends StatelessWidget {
   const VocabularyPage({super.key});
-
-  @override
-  _VocabularyPageState createState() => _VocabularyPageState();
-}
-
-class _VocabularyPageState extends State<VocabularyPage> {
-  List<Map<String, String>> _words = [];
-  final TextEditingController _wordController = TextEditingController();
-  final TextEditingController _translationController = TextEditingController();
-
-  final List<String> _wordTypes = [
-    'Nouns',
-    'Verbs',
-    'Adjectives',
-    'Adverbs',
-    'Prepositions',
-    'Determiners',
-    'Pronouns',
-    'Conjunctions'
-  ];
-  String? _selectedType;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadWords();
-  }
-
-  void _loadWords() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? storedWords = prefs.getString('words');
-
-    if (storedWords != null) {
-      setState(() {
-        _words = List<Map<String, String>>.from(json.decode(storedWords));
-      });
-    }
-  }
-
-  void _saveWords() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('words', json.encode(_words));
-  }
-
-  void _addWord() {
-    String newWord = _wordController.text;
-    String translation = _translationController.text;
-
-    if (newWord.isNotEmpty && _selectedType != null && translation.isNotEmpty) {
-      setState(() {
-        _words.add({
-          'word': newWord,
-          'type': _selectedType!,
-          'translation': translation
-        });
-      });
-
-      _wordController.clear();
-      _translationController.clear();
-      _selectedType = null;
-
-      _saveWords();
-    }
-  }
-
-  void _removeWord(int index) {
-    setState(() {
-      _words.removeAt(index);
-    });
-
-    _saveWords();
-  }
-
-  void _editWord(int index) {
-    _wordController.text = _words[index]['word']!;
-    _translationController.text = _words[index]['translation']!;
-    _selectedType = _words[index]['type'];
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Edit Word'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _wordController,
-                decoration: const InputDecoration(
-                  labelText: 'Edit word',
-                ),
-              ),
-              TextField(
-                controller: _translationController,
-                decoration: const InputDecoration(
-                  labelText: 'Edit translation',
-                ),
-              ),
-              DropdownButton<String>(
-                value: _selectedType,
-                hint: const Text('Select type of word'),
-                onChanged: (String? newValue) {
-                  setState(() {
-                    _selectedType = newValue;
-                  });
-                },
-                items: _wordTypes.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-            ],
-          ),
-          actions: [
-            ElevatedButton(
-              child: const Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop(); // ปิด dialog
-              },
-            ),
-            ElevatedButton(
-              child: const Text('Save'),
-              onPressed: () {
-                setState(() {
-                  _words[index] = {
-                    'word': _wordController.text,
-                    'type': _selectedType!,
-                    'translation': _translationController.text
-                  };
-                });
-                _wordController.clear();
-                _translationController.clear();
-                _selectedType = null;
-                _saveWords();
-                Navigator.of(context).pop(); // ปิด dialog หลังจากบันทึกข้อมูล
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _wordController,
-              decoration: const InputDecoration(
-                labelText: 'Enter new word',
-              ),
-            ),
-            TextField(
-              controller: _translationController,
-              decoration: const InputDecoration(
-                labelText: 'Enter translation',
-              ),
-            ),
-            const SizedBox(height: 10),
-            DropdownButton<String>(
-              value: _selectedType,
-              hint: const Text('Select type of word'),
-              onChanged: (String? newValue) {
-                setState(() {
-                  _selectedType = newValue;
-                });
-              },
-              items: _wordTypes.map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _addWord,
-              child: const Text('Save Word'),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _words.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onLongPress: () => _editWord(index),
-                    child: ListTile(
-                      title: Text(
-                          '${_words[index]['word']} (${_words[index]['type']})'),
-                      subtitle:
-                          Text('Translation: ${_words[index]['translation']}'),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () => _removeWord(index),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+      appBar: AppBar(
+        title: const Text('Vocabulary'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ManageWordsPage()),
+            );
+          },
+          child: const Text('Manage Words'),
         ),
       ),
     );
