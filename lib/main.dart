@@ -110,13 +110,37 @@ class _MainScaffoldState extends State<MainScaffold> {
 class SettingPage extends StatelessWidget {
   const SettingPage({super.key});
 
+  void _signOut(BuildContext context) {
+    // เมื่อกดปุ่ม Sign Out, นำทางกลับไปที่หน้า LoginScreen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+    // หากมีการจัดการ session เช่น shared preferences ก็สามารถเคลียร์ที่นี่ได้
+    // เช่น: SharedPreferences prefs = await SharedPreferences.getInstance();
+    // prefs.clear();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Settings Page'),
+      ),
       body: Center(
-        child: Text(
-          'Settings Page',
-          style: TextStyle(fontSize: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text(
+              'Settings Page',
+              style: TextStyle(fontSize: 20),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => _signOut(context),
+              child: const Text('Sign Out'),
+            ),
+          ],
         ),
       ),
     );
